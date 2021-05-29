@@ -1,0 +1,61 @@
+# Example vapordns serving zone data from an RFC 1035-style master file
+#aiql7yv7ka6ck5mxpfnugi3hoe.vapordns {
+#    file /etc/vapordns/example.zonefile 
+#}
+
+## Example vapordns domain with a simple hosts-file like config
+#aiql7yv7ka6ck5mxpfnugi3hoe.vapordns {
+#    hosts {
+#     220:bfe2:bf50:3c25:7597:795b:4323:6771 aiql7yv7ka6ck5mxpfnugi3hoe.vapordns   
+#     320:bfe2:bf50:3c25::f                  lofi.aiql7yv7ka6ck5mxpfnugi3hoe.vapordns   
+#    }
+#}
+
+vapordns, meshname {
+  meshname
+}
+
+eth {
+  ens {
+    connection https://cloudflare-eth.com
+    #connection http://[320:bfe2:bf50:3c25::100]/
+
+    ## don't change, only used in SOA responses
+    ethlinknameservers ns1.ethdns.xyz ns2.ethdns.xyz
+    
+    ipfsgatewaya 104.17.96.13
+    #ipfsgatewaya 104.17.64.14
+    #ipfsgatewaya 176.9.154.81
+    #ipfsgatewaya 127.0.0.1
+    #ipfsgatewayaaaa 320:bfe2:bf50:3c25::101
+    #ipfsgatewayaaaa 2a01:4f8:160:4069::2
+  }
+}
+
+. {
+  cache
+
+  rewrite stop {
+    # This rewrites any requests for *.eth.link domains to *.eth internally
+    # prior to being processed by the main ENS resolver.
+    name regex (.*)\.eth\.link {1}.eth
+    answer name (.*)\.eth {1}.eth.link
+  }
+
+  ## Forward regular DNS to cuckflare's DNS-over-TLS server
+  ## for more privacy, use DoT-enabled servers from https://servers.opennic.org/
+  forward . tls://1.1.1.1:853 {
+    tls_servername cloudflare-dns.com
+    health_check 5s
+  }
+
+  ## Forward to unencrypted DNS servers
+  #forward . [301:2522::53]:53
+  #forward . 1.1.1.1:53
+  #forward . [320:bfe2:bf50:3c25::100]:53
+
+  acl {
+    allow net ::1/128 fc00::/7 127.0.0.0/8 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16
+    block
+  }
+}

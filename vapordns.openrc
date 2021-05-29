@@ -1,0 +1,12 @@
+#!/sbin/openrc-run
+name="vapordns"
+description="Experimental DNS server for mesh networks"
+supervisor=supervise-daemon
+command=/usr/local/bin/vapordns
+command_args="-conf /etc/vapordns/Corefile"
+
+depend() {
+	need net
+	after firewall
+	before radvd
+}
