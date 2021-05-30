@@ -11,7 +11,17 @@ vapordns can:
 
 ## Usage
 
-See `DOCKER_TIPS.md`
+Building from source (requires Golang >=1.16.2):
+
+    git clone https://github.com/popura-network/vapordns
+    cd vapordns
+    ./build.sh
+
+Or pull the docker image:
+    
+    docker pull zhoreeq/vapordns
+
+For more docker tips, see `DOCKER_TIPS.md`
 
 ## Configuration
 

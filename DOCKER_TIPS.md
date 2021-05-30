@@ -1,7 +1,11 @@
 vapordns in containers
 ======================
 
-Build the image from source:
+Pull the image from docker hub:
+
+    docker pull zhoreeq/vapordns
+
+or build the image from source:
 
     docker build -t vapordns .
 
